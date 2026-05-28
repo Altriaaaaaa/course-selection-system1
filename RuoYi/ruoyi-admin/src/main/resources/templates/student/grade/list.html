@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head><th:block th:include="include :: header('成绩查询')" /></head>
+<body class="gray-bg"><div class="container-div"><div class="row"><div class="col-sm-12 select-table table-striped"><table id="bootstrap-table"></table></div></div></div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+var sno = new URLSearchParams(window.location.search).get("sno") || "2021001001";
+$(function() {
+    var options = {
+        url: ctx + "student/grade/list",
+        createUrl: undefined, updateUrl: undefined, removeUrl: undefined,
+        modalName: "成绩", uniqueId: "cno",
+        queryParams: function(params) { return {pageSize: params.limit, pageNum: params.offset / params.limit + 1, sno: sno}; },
+        columns: [{field:'cno',title:'课程号'},{field:'cname',title:'课程名'},{field:'semester',title:'学期'},{field:'normalScore',title:'平时成绩'},{field:'testScore',title:'考试成绩'},{field:'total',title:'总评',formatter:function(v,r){if (r.normalScore && r.testScore) return (r.normalScore*0.4+r.testScore*0.6).toFixed(1);return '-';}}]
+    };
+    $.table.init(options);
+});
+</script></body></html>

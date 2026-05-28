@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head><th:block th:include="include :: header('可选课程')" /></head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="course-form">
+                <div class="select-list">
+                    <ul>
+                        <li>学期：<input type="text" id="semester-input" value="2025-2026-2" placeholder="如 2025-2026-2" style="width:160px"/></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+var sno = new URLSearchParams(window.location.search).get("sno") || "";
+$(function() {
+    var options = {
+        url: ctx + "student/course/list",
+        createUrl: undefined, updateUrl: undefined, removeUrl: undefined,
+        modalName: "课程", uniqueId: "cno",
+        columns: [{field:'cno',title:'课程号'},{field:'cname',title:'课程名'},{field:'credit',title:'学分'},{field:'hours',title:'学时'},{field:'courseType',title:'类型',formatter:function(v){return v==0?'必修':'选修';}},{field:'deptName',title:'开课院系'},{title:'操作',formatter:function(v,r){var cnoEnc=$.common.escapeHtml(r.cno),cnameEnc=$.common.escapeHtml(r.cname);return '<a class="btn btn-success btn-xs" href="#" onclick="selectCourse(\''+cnoEnc+'\',\''+cnameEnc+'\')">选课</a>';}}]
+    };
+    $.table.init(options);
+});
+function selectCourse(cno, cname) {
+    var sem = $("#semester-input").val() || "2025-2026-2";
+    var msg = $.common.escapeHtml('确认选修 <b>' + cname + '</b>（' + sem + '）？');
+    layer.confirm(msg, {btn: ['确认', '取消']}, function(idx) {
+        layer.close(idx);
+        $.operate.save(ctx + "student/course/select", {sno:sno, cno:cno, semester:sem});
+    });
+}
+</script></body></html>

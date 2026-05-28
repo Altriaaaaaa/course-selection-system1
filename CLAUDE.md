@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 选课系统（Course Selection System），基于若依 RuoYi v4.8.3（Spring Boot 4.x + JDK 17）的单体应用。数据库原理课程项目，3 人小组。
 
-**当前阶段**：物理设计（DDL）阶段，业务代码尚未开始编写。项目只是干净的若依框架脚手架。详细进度见 `memory/project_status.md`。
+**当前阶段**：业务代码已完成，功能测试中。管理员 CRUD、教师端、学生端均已开发。详细进度见 `memory/project_status.md`。
 
 ## 常用命令
 

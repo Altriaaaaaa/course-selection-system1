@@ -1,0 +1,54 @@
+package com.ruoyi.system.domain;
+
+import java.math.BigDecimal;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+public class Course
+{
+    private String cno;
+    private String cname;
+    private BigDecimal credit;
+    private Integer hours;
+    private Integer courseType;
+    private Integer deptId;
+    private String adminId;
+    private String deptName;
+
+    public String getCno() { return cno; }
+    public void setCno(String cno) { this.cno = cno; }
+
+    public String getCname() { return cname; }
+    public void setCname(String cname) { this.cname = cname; }
+
+    public BigDecimal getCredit() { return credit; }
+    public void setCredit(BigDecimal credit) { this.credit = credit; }
+
+    public Integer getHours() { return hours; }
+    public void setHours(Integer hours) { this.hours = hours; }
+
+    public Integer getCourseType() { return courseType; }
+    public void setCourseType(Integer courseType) { this.courseType = courseType; }
+
+    public Integer getDeptId() { return deptId; }
+    public void setDeptId(Integer deptId) { this.deptId = deptId; }
+
+    public String getAdminId() { return adminId; }
+    public void setAdminId(String adminId) { this.adminId = adminId; }
+
+    public String getDeptName() { return deptName; }
+    public void setDeptName(String deptName) { this.deptName = deptName; }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+            .append("cno", getCno())
+            .append("cname", getCname())
+            .append("credit", getCredit())
+            .append("hours", getHours())
+            .append("courseType", getCourseType())
+            .append("deptId", getDeptId())
+            .append("adminId", getAdminId())
+            .toString();
+    }
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改成绩')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-cs-edit" th:object="${cs}">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">学号：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" th:value="${cs.sno}" disabled>
+                    <input type="hidden" name="sno" th:value="${cs.sno}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">课程号：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" th:value="${cs.cno}" disabled>
+                    <input type="hidden" name="cno" th:value="${cs.cno}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">课程名：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" th:field="*{cname}" disabled>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">平时成绩：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="normalScore" th:field="*{normalScore}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">考试成绩：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="testScore" th:field="*{testScore}">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "admin/courseselection";
+        function submitHandler() {
+            if ($.validate.form()) { $.operate.save(prefix + "/edit", $('#form-cs-edit').serialize()); }
+        }
+    </script>
+</body>
+</html>

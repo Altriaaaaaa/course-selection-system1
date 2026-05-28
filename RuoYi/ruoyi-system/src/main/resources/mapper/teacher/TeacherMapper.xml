@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TeacherMapper">
+
+    <resultMap type="Teacher" id="TeacherResult">
+        <id     property="tno"          column="tno"          />
+        <result property="tname"        column="tname"        />
+        <result property="sex"          column="sex"          />
+        <result property="birth"        column="birth"        />
+        <result property="rank"         column="rank"         />
+        <result property="salary"       column="salary"       />
+        <result property="passwordHash" column="password_hash"/>
+        <result property="status"       column="status"       />
+        <result property="deptId"       column="dept_id"      />
+        <result property="createdBy"    column="created_by"   />
+        <result property="deptName"     column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectTeacherVo">
+        select t.tno, t.tname, t.sex, t.birth, t.rank, t.salary,
+               t.password_hash, t.status, t.dept_id, t.created_by,
+               d.dept_name
+        from teacher t
+        left join department d on t.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectTeacherList" parameterType="Teacher" resultMap="TeacherResult">
+        <include refid="selectTeacherVo"/>
+        <where>
+            <if test="tno != null and tno != ''">
+                and t.tno like concat('%', #{tno}, '%')
+            </if>
+            <if test="tname != null and tname != ''">
+                and t.tname like concat('%', #{tname}, '%')
+            </if>
+            <if test="deptId != null">
+                and t.dept_id = #{deptId}
+            </if>
+        </where>
+        order by t.tno
+    </select>
+
+    <select id="selectTeacherById" parameterType="String" resultMap="TeacherResult">
+        <include refid="selectTeacherVo"/>
+        where t.tno = #{tno}
+    </select>
+
+    <select id="checkTnoUnique" parameterType="String" resultMap="TeacherResult">
+        select tno from teacher where tno = #{tno} limit 1
+    </select>
+
+    <insert id="insertTeacher" parameterType="Teacher">
+        insert into teacher(tno, tname, sex, birth, `rank`, salary, password_hash, status, dept_id, created_by)
+        values (#{tno}, #{tname}, #{sex}, #{birth}, #{rank}, #{salary}, #{passwordHash}, #{status}, #{deptId}, #{createdBy})
+    </insert>
+
+    <update id="updateTeacher" parameterType="Teacher">
+        update teacher
+        <set>
+            <if test="tname != null and tname != ''">tname = #{tname},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="birth != null">birth = #{birth},</if>
+            <if test="rank != null">`rank` = #{rank},</if>
+            <if test="salary != null">salary = #{salary},</if>
+            <if test="passwordHash != null and passwordHash != ''">password_hash = #{passwordHash},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="createdBy != null">created_by = #{createdBy},</if>
+        </set>
+        where tno = #{tno}
+    </update>
+
+    <delete id="deleteTeacherById" parameterType="String">
+        delete from teacher where tno = #{tno}
+    </delete>
+
+</mapper>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head><th:block th:include="include :: header('我的选课')" /></head>
+<body class="gray-bg"><div class="container-div"><div class="row"><div class="col-sm-12 select-table table-striped"><table id="bootstrap-table"></table></div></div></div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+var sno = new URLSearchParams(window.location.search).get("sno") || "2021001001";
+$(function() {
+    var options = {
+        url: ctx + "student/course/my/list",
+        createUrl: undefined, updateUrl: undefined, removeUrl: undefined,
+        modalName: "选课", uniqueId: "cno",
+        queryParams: function(params) { return {pageSize: params.limit, pageNum: params.offset / params.limit + 1, sno: sno}; },
+        columns: [{field:'cno',title:'课程号'},{field:'cname',title:'课程名'},{field:'semester',title:'学期'},{field:'normalScore',title:'平时成绩'},{field:'testScore',title:'考试成绩'},{title:'操作',formatter:function(v,r){return '<a class="btn btn-danger btn-xs" href="#" onclick="dropCourse(\''+r.cno+'\')">退课</a>';}}]
+    };
+    $.table.init(options);
+});
+function dropCourse(cno) {
+    $.modal.confirm("确定要退选该课程吗？", function() {
+        $.operate.remove(ctx + "student/course/drop", {sno:sno, cno:cno});
+    });
+}
+</script></body></html>

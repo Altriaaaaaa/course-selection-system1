@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head><th:block th:include="include :: header('教师工作台')" /></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+<div class="row">
+<div class="col-sm-4"><div class="ibox"><div class="ibox-title"><h5>教师信息</h5></div>
+<div class="ibox-content" id="info-box"><p>加载中...</p></div></div></div>
+<div class="col-sm-8"><div class="ibox"><div class="ibox-title"><h5>教授课程</h5></div>
+<div class="ibox-content"><table id="bootstrap-table"></table></div></div></div></div></div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+var tno = new URLSearchParams(window.location.search).get("tno") || "T2021001";
+$(function() {
+    $.ajax({url: ctx + "teacher/info", type: "post", data: {tno: tno}, success: function(r) {
+        if (r.code == 0 && r.data) { var d = r.data; $("#info-box").html("<p>教师号："+d.tno+"</p><p>姓名："+d.tname+"</p><p>职称："+(d.rank||'')+"</p>"); }
+    }});
+    var options = {
+        url: ctx + "teacher/course/list",
+        createUrl: undefined,
+        updateUrl: undefined,
+        removeUrl: undefined,
+        modalName: "课程",
+        uniqueId: "cno",
+        queryParams: function(params) {
+            return {pageSize: params.limit, pageNum: params.offset / params.limit + 1, tno: tno};
+        },
+        columns: [
+            {field:'cno',title:'课程号'},
+            {field:'cname',title:'课程名'},
+            {field:'semester',title:'学期'},
+            {field:'classTime',title:'上课时间'},
+            {title:'操作',formatter:function(v,r){return '<a class="btn btn-primary btn-xs" href="'+ctx+'teacher/course/students?tno='+tno+'&cno='+r.cno+'">查看学生</a>';}}
+        ]
+    };
+    $.table.init(options);
+});
+</script></body></html>

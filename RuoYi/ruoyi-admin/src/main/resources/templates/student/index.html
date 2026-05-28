@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head><th:block th:include="include :: header('学生工作台')" /></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+<div class="row">
+<div class="col-sm-4"><div class="ibox"><div class="ibox-title"><h5>学生信息</h5></div>
+<div class="ibox-content"><p>学号：<span id="info-sno"></span></p><p>姓名：<span id="info-name"></span></p></div></div></div>
+<div class="col-sm-8"><div class="ibox"><div class="ibox-title"><h5>快捷操作</h5></div>
+<div class="ibox-content">
+<a class="btn btn-primary" th:href="@{/student/course(sno=${param.sno})}">浏览可选课程</a>
+<a class="btn btn-success" th:href="@{/student/course/my(sno=${param.sno})}">我的选课</a>
+<a class="btn btn-info" th:href="@{/student/grade(sno=${param.sno})}">成绩查询</a>
+</div></div></div></div></div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+var sno = new URLSearchParams(window.location.search).get("sno") || "2021001001";
+$(function() {
+    $.ajax({url: ctx + "student/info", type: "post", data: {sno: sno}, success: function(r) {
+        if (r.code == 0 && r.data) { $("#info-sno").text(r.data.sno); $("#info-name").text(r.data.sname); }
+    }});
+});
+</script></body></html>

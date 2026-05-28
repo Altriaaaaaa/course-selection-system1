@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head><th:block th:include="include :: header('学生成绩录入')" /></head>
+<body class="gray-bg"><div class="container-div"><div class="row"><div class="col-sm-12 select-table table-striped"><table id="bootstrap-table"></table></div></div></div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+var cno = new URLSearchParams(window.location.search).get("cno");
+$(function() {
+    var options = {
+        url: ctx + "teacher/course/students/list",
+        createUrl: undefined, updateUrl: undefined, removeUrl: undefined,
+        modalName: "学生", uniqueId: "sno",
+        queryParams: function(params) { return {pageSize: params.limit, pageNum: params.offset / params.limit + 1, cno: cno}; },
+        columns: [
+            {field:'sno',title:'学号'},{field:'sname',title:'姓名'},
+            {field:'normalScore',title:'平时成绩',editable:{type:'text',title:'平时成绩',validate:function(v){return !isNaN(v) && v>=0 && v<=100;}}},
+            {field:'testScore',title:'考试成绩',editable:{type:'text',title:'考试成绩',validate:function(v){return !isNaN(v) && v>=0 && v<=100;}}},
+            {title:'操作',formatter:function(v,r){return '<a class="btn btn-success btn-xs" href="#" onclick="saveGrade(this,\''+$.common.escapeHtml(r.sno)+'\',\''+$.common.escapeHtml(r.cno)+'\')">保存成绩</a>';}}
+        ],
+        onEditableSave: function(field, row, oldValue, $el) {
+            $.operate.save(ctx + "teacher/grade/save", {sno:row.sno, cno:row.cno, normalScore:row.normalScore, testScore:row.testScore});
+        }
+    };
+    $.table.init(options);
+});
+function saveGrade(el, sno, cno) {
+    var $row = $(el).closest('tr');
+    var n = $row.find('.editable[data-field="normalScore"]').text().trim();
+    var t = $row.find('.editable[data-field="testScore"]').text().trim();
+    if (!n || !t) { layer.msg('请先在成绩列中点击输入成绩'); return; }
+    $.operate.save(ctx + "teacher/grade/save", {sno:sno, cno:cno, normalScore:n, testScore:t});
+}
+</script></body></html>

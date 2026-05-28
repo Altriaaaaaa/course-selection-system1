@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ClassMapper">
+    <resultMap type="com.ruoyi.system.domain.Class" id="ClassResult">
+        <id property="tno" column="tno"/>
+        <id property="cno" column="cno"/>
+        <result property="semester" column="semester"/>
+        <result property="classTime" column="class_time"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="tname" column="tname"/>
+        <result property="cname" column="cname"/>
+        <result property="id" column="id"/>
+    </resultMap>
+
+    <sql id="selectClassVo">
+        select cl.tno, cl.cno, cl.semester, cl.class_time, cl.admin_id, t.tname, c.cname, CONCAT(cl.tno, '-', cl.cno) as id
+        from class cl left join teacher t on cl.tno = t.tno left join course c on cl.cno = c.cno
+    </sql>
+
+    <select id="selectClassList" parameterType="com.ruoyi.system.domain.Class" resultMap="ClassResult">
+        <include refid="selectClassVo"/>
+        <where>
+            <if test="tno != null and tno != ''">and cl.tno like concat('%', #{tno}, '%')</if>
+            <if test="cno != null and cno != ''">and cl.cno like concat('%', #{cno}, '%')</if>
+            <if test="semester != null and semester != ''">and cl.semester like concat('%', #{semester}, '%')</if>
+        </where>
+        order by cl.tno, cl.cno
+    </select>
+
+    <select id="selectClassById" resultMap="ClassResult">
+        <include refid="selectClassVo"/> where cl.tno = #{param1} and cl.cno = #{param2}
+    </select>
+
+    <insert id="insertClass" parameterType="com.ruoyi.system.domain.Class">
+        insert into class
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tno != null">tno,</if>
+            <if test="cno != null">cno,</if>
+            <if test="semester != null">semester,</if>
+            <if test="classTime != null">class_time,</if>
+            <if test="adminId != null">admin_id,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tno != null">#{tno},</if>
+            <if test="cno != null">#{cno},</if>
+            <if test="semester != null">#{semester},</if>
+            <if test="classTime != null">#{classTime},</if>
+            <if test="adminId != null">#{adminId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateClass" parameterType="com.ruoyi.system.domain.Class">
+        update class
+        <set>
+            <if test="semester != null">semester = #{semester},</if>
+            <if test="classTime != null">class_time = #{classTime},</if>
+            <if test="adminId != null">admin_id = #{adminId},</if>
+        </set>
+        where tno = #{tno} and cno = #{cno}
+    </update>
+
+    <delete id="deleteClassById">
+        delete from class where tno = #{param1} and cno = #{param2}
+    </delete>
+</mapper>

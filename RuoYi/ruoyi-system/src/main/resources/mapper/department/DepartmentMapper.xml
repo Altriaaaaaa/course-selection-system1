@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DepartmentMapper">
+
+    <resultMap type="Department" id="DepartmentResult">
+        <id     property="deptId"    column="dept_id"    />
+        <result property="deptName"  column="dept_name"  />
+        <result property="address"   column="address"    />
+        <result property="phoneCode" column="phone_code" />
+    </resultMap>
+
+    <sql id="selectDepartmentVo">
+        select dept_id, dept_name, address, phone_code from department
+    </sql>
+
+    <select id="selectDepartmentList" parameterType="Department" resultMap="DepartmentResult">
+        <include refid="selectDepartmentVo"/>
+        <where>
+            <if test="deptName != null and deptName != ''">
+                and dept_name like concat('%', #{deptName}, '%')
+            </if>
+            <if test="address != null and address != ''">
+                and address like concat('%', #{address}, '%')
+            </if>
+        </where>
+        order by dept_id
+    </select>
+
+    <select id="selectDepartmentById" parameterType="Integer" resultMap="DepartmentResult">
+        <include refid="selectDepartmentVo"/>
+        where dept_id = #{deptId}
+    </select>
+
+    <select id="checkDeptNameUnique" parameterType="String" resultMap="DepartmentResult">
+        <include refid="selectDepartmentVo"/>
+        where dept_name = #{deptName} limit 1
+    </select>
+
+    <insert id="insertDepartment" parameterType="Department">
+        insert into department
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptName != null and deptName != ''">dept_name,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="phoneCode != null and phoneCode != ''">phone_code,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptName != null and deptName != ''">#{deptName},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="phoneCode != null and phoneCode != ''">#{phoneCode},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDepartment" parameterType="Department">
+        update department
+        <set>
+            <if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="phoneCode != null">phone_code = #{phoneCode},</if>
+        </set>
+        where dept_id = #{deptId}
+    </update>
+
+    <delete id="deleteDepartmentById" parameterType="Integer">
+        delete from department where dept_id = #{deptId}
+    </delete>
+
+</mapper>

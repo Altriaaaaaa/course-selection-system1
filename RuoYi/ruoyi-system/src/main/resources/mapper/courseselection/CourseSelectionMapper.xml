@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CourseSelectionMapper">
+    <resultMap type="com.ruoyi.system.domain.CourseSelection" id="CourseSelectionResult">
+        <id property="sno" column="sno"/>
+        <id property="cno" column="cno"/>
+        <result property="semester" column="semester"/>
+        <result property="normalScore" column="normal_score"/>
+        <result property="testScore" column="test_score"/>
+        <result property="sname" column="sname"/>
+        <result property="cname" column="cname"/>
+        <result property="id" column="id"/>
+    </resultMap>
+
+    <sql id="selectCSVo">
+        select cs.sno, cs.cno, cs.semester, cs.normal_score, cs.test_score, s.sname, c.cname, CONCAT(cs.sno, '-', cs.cno) as id
+        from courseselection cs left join student s on cs.sno = s.sno left join course c on cs.cno = c.cno
+    </sql>
+
+    <select id="selectCourseSelectionList" parameterType="com.ruoyi.system.domain.CourseSelection" resultMap="CourseSelectionResult">
+        <include refid="selectCSVo"/>
+        <where>
+            <if test="sno != null and sno != ''">and cs.sno like concat('%', #{sno}, '%')</if>
+            <if test="cno != null and cno != ''">and cs.cno like concat('%', #{cno}, '%')</if>
+            <if test="semester != null and semester != ''">and cs.semester like concat('%', #{semester}, '%')</if>
+        </where>
+        order by cs.sno, cs.cno
+    </select>
+
+    <select id="selectCourseSelectionById" resultMap="CourseSelectionResult">
+        <include refid="selectCSVo"/> where cs.sno = #{param1} and cs.cno = #{param2}
+    </select>
+
+    <insert id="insertCourseSelection" parameterType="com.ruoyi.system.domain.CourseSelection">
+        insert into courseselection
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sno != null">sno,</if>
+            <if test="cno != null">cno,</if>
+            <if test="semester != null">semester,</if>
+            <if test="normalScore != null">normal_score,</if>
+            <if test="testScore != null">test_score,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sno != null">#{sno},</if>
+            <if test="cno != null">#{cno},</if>
+            <if test="semester != null">#{semester},</if>
+            <if test="normalScore != null">#{normalScore},</if>
+            <if test="testScore != null">#{testScore},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCourseSelection" parameterType="com.ruoyi.system.domain.CourseSelection">
+        update courseselection
+        <set>
+            <if test="normalScore != null">normal_score = #{normalScore},</if>
+            <if test="testScore != null">test_score = #{testScore},</if>
+        </set>
+        where sno = #{sno} and cno = #{cno}
+    </update>
+
+    <delete id="deleteCourseSelectionById">
+        delete from courseselection where sno = #{param1} and cno = #{param2}
+    </delete>
+</mapper>

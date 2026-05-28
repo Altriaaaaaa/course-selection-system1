@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改学生')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-student-edit" th:object="${student}">
+            <input name="sno" type="hidden" th:field="*{sno}"/>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">学号：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" th:field="*{sno}" disabled>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">姓名：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="sname" th:field="*{sname}" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">性别：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="sex">
+                        <option value="男" th:selected="*{sex == '男'}">男</option>
+                        <option value="女" th:selected="*{sex == '女'}">女</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">出生日期：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="birth" th:field="*{birth}" placeholder="yyyy-MM-dd">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">籍贯：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="nativePlace" th:field="*{nativePlace}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">电话：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="phone" th:field="*{phone}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">所属院系：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="deptId" required>
+                        <option th:each="d:${departments}" th:value="${d.deptId}" th:text="${d.deptName}" th:selected="${d.deptId == student.deptId}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">密码：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="password" name="passwordHash" placeholder="留空则不修改密码">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="status">
+                        <option value="1" th:selected="*{status == 1}">正常</option>
+                        <option value="0" th:selected="*{status == 0}">停用</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "admin/student";
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-student-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>
